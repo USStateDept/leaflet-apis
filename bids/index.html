@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>BIDS API with LeafletJS</title>
+
+        <!-- Core CSS -->
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link href="../../bids2/assets/typeahead.js/typeahead.js-bootstrap.css" rel="stylesheet" type="text/css"> <!--https://github.com/jharding/typeahead.js-bootstrap.css-->
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+		<link rel="stylesheet" href="../../lib/Leaflet.markercluster/dist/MarkerCluster.css" />
+		<link rel="stylesheet" href="../../lib/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
+		<link rel="stylesheet" href="../../lib/bootstrap-datepicker/css/datepicker.css">
+		
+		<script src="../../lib/jquery/jquery-1.7.2.min.js"></script>
+		<script src="../../lib/bootstrap-3.0.3/dist/js/bootstrap.min.js"></script>
+		<script src="../../lib/jquery-number/jquery.number.min.js"></script>
+		<script src="../../lib/backbone/backbone-min.js"></script>
+		<script src="../../lib/underscore/underscore-min.js"></script>
+		<script src="../../lib/backgrid-0.3.5/lib/backgrid.min.js"></script>
+		<script src="../../lib/jquery-dateFormat/dist/jquery-dateFormat.min.js"></script>
+		<script src="../../lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+		<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.2"></script>
+		<script type="text/javascript" src="../../bids2/js/host.js"></script>
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			siteParams();
+			ga('create', gaID, host);
+			ga('send', 'pageview');
+		</script>
+		
+        <!-- Custom styles for this template -->
+        <style>
+            html, body, #map {
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+            }
+            #loading {
+                position: absolute;
+                width: 220px;
+                height: 19px;
+                top: 50%;
+                left: 50%;
+                margin: -10px 0 0 -110px;
+                z-index: 20001;
+            }
+            .leaflet-control-layers label {
+                font-weight: normal;
+                margin-bottom: 0px;
+            }
+            .table {
+                margin-bottom: 0px;
+            }
+
+            .leaflet-control-layers-expanded {
+                opacity: 0.9;
+            }
+            .leaflet-popup-content {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+            .leaflet-popup-content-wrapper {
+                border-radius: 5px;
+            }
+            /* Print Handling */
+            @media print {
+                .navbar {
+                    display: none !important;
+                }
+                .leaflet-control-container {
+                    display: none !important;
+                }
+            }
+			
+			.marker-cluster div {
+				color: white;
+				font-weight: bold;
+				text-shadow: 1px 1px 5px gray;
+			}
+			
+			.leaflet-popup-content {
+				margin-right: 19px;
+			}
+			
+			#viewdetails {
+				overflow-y:scroll;
+				height: 95px !important;
+			}
+			#viewComments {
+				overflow-y:scroll;
+				height: 95px !important;
+			}
+			.marker-cluster-small {
+				background-color: rgba(217, 121, 37, 0.75);
+			}
+			.marker-cluster-medium {
+				background-color: rgba(217, 121, 37, 0.75);
+			}
+			.marker-cluster-large {
+				background-color: rgba(217, 121, 37, 0.75);
+			}
+        </style>
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+		
+
+	 </head>
+	 <body>
+        <div id="map"></div>
+        <div id="loading" style="display:block;">
+            <div class="loading-indicator">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-info" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js?2"></script>
+        <script src="../lib/Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+		<script type="text/javascript">
+			$('.input-daterange').datepicker({
+                    todayBtn: "linked"
+                });
+			
+			var urlWhole = "http://localhost/geoserver/opengeo/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=opengeo:DATATABLE&srsName=EPSG:4326&outputformat=json";
+			var urlFiltered = "";
+			
+			var descripVal = "Incumbent is the Political/Economic Deputy Chief and senior Economic Officer. S/he reports to the Political/Economic Chief and supervises two Locally Employed (LE) Economic Staff and two Eligible Family Member (EFM) Economic Assistants. Increased economic engagement including trade and investment is a top priority, and the incumbent works closely with the Foreign Commercial Service, Foreign Agricultural Service, and other partners such as the American Chamber of Commerce in Cambodia. The economic portfolio also includes macroeconomic issues, bilateral debt, protection of intellectual property rights, and foreign assistance trends in Cambodia. The Deputy Chief acts as Section Chief in the absence of Political/Economic Chief. POC: POL/ECON Chief Darren Hultman, DCM Jeff Daigle, and Deputy Director (EAP/MLS). Updated July 2013.";
+			
+			var cmAttr = "<a href='mailto:dittemoremb@state.gov'>eDiplomacy Geo|DST</a>",
+			//cmAttr = 'Data: <a href="http://www.eia.gov/countries/data.cfm" title="U.S. Energy Information Administration">EIA</a>, <a href="http://www.openstreetmap.org/" title="&copy; OpenStreetMap contributors">OpenStreetMap</a>, <a href="http://www.cloudmade.com/" title="&copy; 2011 CloudMade">CloudMade</a>, <a href="http://www.stamen.com/" title="Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.">Stamen Design</a>',
+			cmUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png';
+		
+			var minimal   = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr});
+			
+			var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+				{ attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors' }
+			);
+
+			var map = new L.Map('map', {
+				center: [20, 10],
+				zoom: 3,
+				layers: [minimal]
+			});
+			
+			var markers;
+			var updateMarkers;
+			
+			function getGeoJson(data) {
+				var geoJsonLayer = new L.geoJson(data, {
+					onEachFeature: function (feature, layer) {
+						layer.bindPopup("<h4><a href='#leadDetails' data-toggle='modal' data-target='#leadModal'>" + feature.properties.Project_Title + "</a><br><small>" + feature.properties.Sector + ", US$" + $.number(feature.properties.Project_Size) + "<br></small></h4><h5><small>Status: </small>" + feature.properties.Status + "<br><small>Date Added: </small>" + $.format.date("feature.properties.Project_Announced", 'dd/MM/yyyy') + "<small><br>Primary Funding Source: </small>" + feature.properties.Project_Funding_Source + "<br><div class='btn-group' style='margin:10px;'><button type='button' class='btn btn-link btn-xs'><a href='#' target='_blank' onclick='javascript:ga('send', 'event', 'External_Link', '" + feature.properties.Project_Title + "_Lead_Details', {'nonInteraction': 1});'>Lead Website</a></button><button type='button' class='btn btn-link btn-xs'><a href='#' target='_blank' onclick='javascript:ga('send', 'event', 'Business_Tab_Link', '" + feature.properties.Project_Title + "_Lead_Details', {'nonInteraction': 1});'>Embassy Website</a></button><button type='button' class='btn btn-link btn-xs'><a href='#' target='_blank' onclick='javascript:ga('send', 'event', 'Contact', '" + feature.properties.Project_Title + "_Lead_Details', {'nonInteraction': 1});'>Contact Embassy</a></button></div></div></div></h5>");
+					}
+				});
+				
+				markers = L.markerClusterGroup({showCoverageOnHover: false, maxClusterRadius: 30});
+				markers.addLayer(geoJsonLayer);
+				map.addLayer(markers);
+			}
+	
+			$.ajax({
+				url: urlWhole,
+				dataType: 'json',
+				jsonpCallback: getGeoJson,
+				success: getGeoJson
+			});
+			
+			// Typeahead search functionality
+			$(document).one("ajaxStop", function() {
+                $("#loading").hide();
+            });
+        </script>
+    </body>
+</html>
