@@ -144,22 +144,19 @@
 			
 			var descripVal = "Incumbent is the Political/Economic Deputy Chief and senior Economic Officer. S/he reports to the Political/Economic Chief and supervises two Locally Employed (LE) Economic Staff and two Eligible Family Member (EFM) Economic Assistants. Increased economic engagement including trade and investment is a top priority, and the incumbent works closely with the Foreign Commercial Service, Foreign Agricultural Service, and other partners such as the American Chamber of Commerce in Cambodia. The economic portfolio also includes macroeconomic issues, bilateral debt, protection of intellectual property rights, and foreign assistance trends in Cambodia. The Deputy Chief acts as Section Chief in the absence of Political/Economic Chief. POC: POL/ECON Chief Darren Hultman, DCM Jeff Daigle, and Deputy Director (EAP/MLS). Updated July 2013.";
 			
-			var cmAttr = "<a href='mailto:dittemoremb@state.gov'>eDiplomacy Geo|DST</a>",
-			//cmAttr = 'Data: <a href="http://www.eia.gov/countries/data.cfm" title="U.S. Energy Information Administration">EIA</a>, <a href="http://www.openstreetmap.org/" title="&copy; OpenStreetMap contributors">OpenStreetMap</a>, <a href="http://www.cloudmade.com/" title="&copy; 2011 CloudMade">CloudMade</a>, <a href="http://www.stamen.com/" title="Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.">Stamen Design</a>',
-			cmUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png';
+			var cmAttr = "<a href='mailto:dittemoremb@state.gov'>eDiplomacy Geo|DST</a>";
 		
-			var minimal   = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr});
-			
-			var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-				{ attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors' }
-			);
-
 			var map = new L.Map('map', {
 				center: [20, 10],
-				zoom: 3,
-				layers: [minimal]
+				zoom: 3
 			});
 			
+			L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+				maxZoom: 18,
+				attribution: cmAttr,
+				id: 'examples.map-20v6611k'
+			}).addTo(map);
+		
 			var markers;
 			var updateMarkers;
 			
