@@ -13,7 +13,7 @@
         <!-- Core CSS -->
         <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
         <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-		<link href="../../bids2/assets/typeahead.js/typeahead.js-bootstrap.css" rel="stylesheet" type="text/css"> <!--https://github.com/jharding/typeahead.js-bootstrap.css-->
+		<link href="assets/typeahead.js/typeahead.js-bootstrap.css" rel="stylesheet" type="text/css"> <!--https://github.com/jharding/typeahead.js-bootstrap.css-->
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
 		<link rel="stylesheet" href="../../lib/Leaflet.markercluster/dist/MarkerCluster.css" />
 		<link rel="stylesheet" href="../../lib/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -27,8 +27,7 @@
 		<script src="../../lib/backgrid-0.3.5/lib/backgrid.min.js"></script>
 		<script src="../../lib/jquery-dateFormat/dist/jquery-dateFormat.min.js"></script>
 		<script src="../../lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-		<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.2"></script>
-		<script type="text/javascript" src="../../bids2/js/host.js"></script>
+		<script type="text/javascript" src="js/host.js"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -139,7 +138,7 @@
                     todayBtn: "linked"
                 });
 			
-			var urlWhole = "http://localhost/geoserver/opengeo/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=opengeo:DATATABLE&srsName=EPSG:4326&outputformat=json";
+			var urlWhole = "http://" + host + "/geoserver/opengeo/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=opengeo:DATATABLE&srsName=EPSG:4326&outputformat=json";
 			var urlFiltered = "";
 			
 			var descripVal = "Incumbent is the Political/Economic Deputy Chief and senior Economic Officer. S/he reports to the Political/Economic Chief and supervises two Locally Employed (LE) Economic Staff and two Eligible Family Member (EFM) Economic Assistants. Increased economic engagement including trade and investment is a top priority, and the incumbent works closely with the Foreign Commercial Service, Foreign Agricultural Service, and other partners such as the American Chamber of Commerce in Cambodia. The economic portfolio also includes macroeconomic issues, bilateral debt, protection of intellectual property rights, and foreign assistance trends in Cambodia. The Deputy Chief acts as Section Chief in the absence of Political/Economic Chief. POC: POL/ECON Chief Darren Hultman, DCM Jeff Daigle, and Deputy Director (EAP/MLS). Updated July 2013.";
