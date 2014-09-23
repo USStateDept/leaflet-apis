@@ -19,7 +19,7 @@
 		<link rel="stylesheet" href="../../lib/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
 		<link rel="stylesheet" href="../../lib/bootstrap-datepicker/css/datepicker.css">
 		
-		<script src="../../lib/jquery/jquery-1.7.2.min.js"></script>
+		<script src="../../lib/jquery/jquery-1.11.0.min.js"></script>
 		<script src="../../lib/bootstrap-3.0.3/dist/js/bootstrap.min.js"></script>
 		<script src="../../lib/jquery-number/jquery.number.min.js"></script>
 		<script src="../../lib/backbone/backbone-min.js"></script>
@@ -138,7 +138,7 @@
                     todayBtn: "linked"
                 });
 			
-			var urlWhole = "http://" + host + "/geoserver/opengeo/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=opengeo:DATATABLE&srsName=EPSG:4326&outputformat=json";
+			var urlWhole = "http://" + host + "/geoserver/opengeo/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=opengeo:DATATABLE&srsName=EPSG:4326&Filter=<Filter><And><Or><PropertyIsEqualTo><PropertyName>Status</PropertyName><Literal>In Procurement</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>Status</PropertyName><Literal>Pipeline</Literal></PropertyIsEqualTo></Or><PropertyIsEqualTo><PropertyName>Cleared</PropertyName><Literal>1</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>Archived</PropertyName><Literal>0</Literal></PropertyIsEqualTo></And></Filter>&outputformat=json";
 			var urlFiltered = "";
 			
 			var descripVal = "Incumbent is the Political/Economic Deputy Chief and senior Economic Officer. S/he reports to the Political/Economic Chief and supervises two Locally Employed (LE) Economic Staff and two Eligible Family Member (EFM) Economic Assistants. Increased economic engagement including trade and investment is a top priority, and the incumbent works closely with the Foreign Commercial Service, Foreign Agricultural Service, and other partners such as the American Chamber of Commerce in Cambodia. The economic portfolio also includes macroeconomic issues, bilateral debt, protection of intellectual property rights, and foreign assistance trends in Cambodia. The Deputy Chief acts as Section Chief in the absence of Political/Economic Chief. POC: POL/ECON Chief Darren Hultman, DCM Jeff Daigle, and Deputy Director (EAP/MLS). Updated July 2013.";
